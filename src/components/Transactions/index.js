@@ -51,49 +51,59 @@ const Transactions = () => {
     const [searchInput, setSearchInput] = useState('')
     const [page, setPage] = useState(1)
 
-
     useEffect(()=>{
         const getTransactions = async ()=>{
             const list = await axios.get(`https://newproject-o3v2.onrender.com/transactions?month=${selectedMonth}&page=${page}&search=${searchInput}&perPage=10`)
-            // `https://roxiler-backend-alpha.vercel.app?page=${page}&perPage=10&search=${searchInput}&month=${selectedMonth}`
+            // `https://newproject-o3v2.onrender.com?page=${page}&perPage=10&search=${searchInput}&month=${selectedMonth}`
             if(list){
-                console.log(list)
+               // console.log(list)
                 setTransactionList(list.data.transactions)
             }
         }
         getTransactions()
+
     },[page, searchInput, selectedMonth])
 
-console.log(selectedMonth);
+//console.log(selectedMonth);
 
     return(
         <>
-    <div className='main-container'>
-    <div className='first-container'>
-        <h3 width="20px">Transaction
-            Dashboard
-        </h3>
-    </div>
-    <div className='second-container'>
-        <input value={searchInput} onChange={(e)=> setSearchInput(e.target.value)} className='input-element' type="search" placeholder='Search transaction' />
-        <select  value={selectedMonth} onChange={(e)=> setSelectedMonth(e.target.value)} className='dropdown-list'>
-            {months.map(o=> <option  className='selector-element' key={o.name} value={o.name}>{o.name}</option>)}
-        </select>
-    </div>
-        <table>
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Category</th>
-                <th>Sold</th>
-                <th>Image</th>
-            </tr>
-            </thead>
-            <tbody>
-            {
+    <div className="container">
+            <div className="heading">Transaction Dashboard</div>
+            <div className="form-container">
+                <input
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    className="input-element"
+                    type="search"
+                    placeholder="Search transaction"
+                />
+
+
+                <select
+                    value={selectedMonth}
+                    onChange={(e) => setSelectedMonth(e.target.value)}
+                    className="dropdown-list"
+                >
+                    {months.map(o=> <option  className='selector-element' key={o.name} value={o.name}>{o.name}</option>)}
+
+                </select>
+            </div>
+            <div className="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th>Category</th>
+                            <th>Sold</th>
+                            <th>Image</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {
                 transactionList.map((o)=>{
                     const {category,
                         // dateOfSale,
@@ -116,21 +126,21 @@ console.log(selectedMonth);
                     )
                 })
             }              
-            </tbody>
-        </table>
-        <div className='last-container'>
-            <p>Page No: {page}</p>
-            <p><span onClick={()=> setPage(prevValue=> prevValue+1)} className='next-button'>Next</span> - <span onClick={()=> setPage(prevValue=> prevValue>1? prevValue-1: prevValue)} className='previous-button'>Previous</span></p>
-            <p>Per Page: 10</p>
+
+                    </tbody>
+                </table>
+            </div>
+            <div className="pagination">
+                <span className="page-info">Page {page}</span>
+                <button
+                    onClick={() => setPage((prevPage) => Math.max(prevPage - 1, 1))}
+                    disabled={page === 1}
+                >
+                    Previous
+                </button>
+                <button onClick={() => setPage((prevPage) => prevPage + 1)}>Next</button>
+            </div>
         </div>
-        <div className='statistics-container'>
-            {/* {transactions component} */}
-        </div>
-        <div className='line'>
-            <hr  />
-        </div>
-        
-    </div>
     <Statistics selectedMonth={selectedMonth} />
     <BarChartComponent  selectedMonth={selectedMonth} />
     </>

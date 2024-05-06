@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart, Bar, XAxis, YAxis, Legend, ResponsiveContainer,CartesianGrid } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Legend, ResponsiveContainer,CartesianGrid ,Tooltip, Rectangle} from 'recharts';
 import axios from 'axios';
 import './index.css'
 
 const BarChartComponent = (props) => {
-    const [barChartData, setBarChartData] = useState([]);
+  const [barChartData, setBarChartData] = useState([]);
   const { selectedMonth } = props;
 
   useEffect(() => {
     const getBarChartData = async () => {
-      //https://roxiler-backend-vijaykumars-projects.vercel.app 
       try {
         const response = await axios.get(`https://newproject-o3v2.onrender.com/bar-chart?month=${selectedMonth}`);
+        console.log(response);
         setBarChartData(response.data);
       } catch (error) {
         console.error('Error fetching bar chart data:', error);
@@ -31,22 +31,38 @@ const BarChartComponent = (props) => {
   return (
 <div className='barchart-container'>
     <h2>Bar Chart Status - {selectedMonth}</h2>
-<ResponsiveContainer width="100%" height={300}>
-      <BarChart data={barChartData} margin={{ top: 5 }}>
+
+<ResponsiveContainer width="100%" height={300} aspect={3}>
+      <BarChart data={barChartData} width={500}
+          height={300}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}>
       <CartesianGrid strokeDasharray="3 3" />
         <XAxis
           dataKey="priceRange"
           tick={{ stroke: 'gray', strokeWidth: 1 }}
+          interval={'preserveStartEnd'}
         />
 
+      
         <YAxis
           tickFormatter={DataFormatter}
           tick={{ stroke: 'gray', strokeWidth: 1 }}
         />
         <Legend wrapperStyle={{ padding: 30 }} />
-        <Bar dataKey="itemCount" name="Number of Items" fill="#37807e" barSize="20%" />
+        <Tooltip contentStyle={{backgroundColor:'red'}}/>
+        <Bar dataKey="itemCount" name="Number of Items"  activeBar={<Rectangle fill="pink" stroke="blue" />} />
       </BarChart>
     </ResponsiveContainer>
+
+
+
+    
+
 </div>
   );
 };

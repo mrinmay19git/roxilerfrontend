@@ -18,7 +18,8 @@
   }
   .barchart-container{
     width: 50%;
-    border: 1px solid black;
+    border: 1px solid blue;
     border-radius: 5px;
     padding: 10px;
+    background-color: aqua;
   }

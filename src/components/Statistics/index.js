@@ -1,38 +1,57 @@
+
+
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import './index.css'
 
-const Statistics = (props) => {
-  const [statistics, setStatistics] = useState({});
-//   const [selectedMonth, setSelectedMonth] = useState('march');
-const {selectedMonth} = props
+// StatisticsHeader component
+const StatisticsHeader = ({ selectedMonth }) => (
+    <h2>Statistics - {selectedMonth}</h2>
+);
 
-  useEffect(() => {
-    const getStatistics = async ()=>{
-      
-        const statistics = await axios.get(`https://newproject-o3v2.onrender.com/statistics/?month=${selectedMonth}`)
-        
-            setStatistics(statistics.data)
+// StatisticsContainer component
 
-        
-    }
-    
+const StatisticsContainer = ({ statistics }) => (
+  <div className='statitics-container'>
+      <div className='element'>
+          <span>Total Sale:</span>
+          <span>{statistics.totalSaleAmount}</span>
+      </div>
+      <div className='element'>
+          <span>Total sold items:</span>
+          <span>{statistics.totalSoldItems}</span>
+      </div>
+      <div className='element'>
+          <span>Total not sold items:</span>
+          <span>{statistics.totalNotSoldItems}</span>
+      </div>
+  </div>
 
-    getStatistics()
-    
-  }, [selectedMonth]);
-  console.log(statistics)
+);
 
-  return (
-    <div className='statistics-main-container'>
-        <h2>Statistics - {selectedMonth}</h2>
-        <div className='statitics-container'>
-            <div className='element'><span>Total Sale</span> <span>{statistics.totalSaleAmount}</span></div>
-            <div className='element'><span>Total sold item</span> <span>{statistics.totalSoldItems}</span></div>
-            <div className='element'><span>Total not sold item</span> <span>{statistics.totalNotSoldItems}</span></div>
+// Statistics component
+const Statistics = ({ selectedMonth }) => {
+    const [statistics, setStatistics] = useState({});
+
+    useEffect(() => {
+        const getStatistics = async () => {
+            try {
+                const response = await axios.get(`https://newproject-o3v2.onrender.com/statistics/?month=${selectedMonth}`);
+                setStatistics(response.data);
+            } catch (error) {
+                console.error('Error fetching statistics:', error);
+            }
+        }
+
+        getStatistics();
+    }, [selectedMonth]);
+
+    return (
+        <div className='statistics-main-container'>
+            <StatisticsHeader selectedMonth={selectedMonth} />
+            <StatisticsContainer statistics={statistics} />
         </div>
-    </div>
-  );
+    );
 };
 
 export default Statistics;
